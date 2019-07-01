@@ -1,0 +1,24 @@
+spring:
+    profiles:
+        active: dev
+camel.springboot.shutdownTimeout: 2
+
+---
+spring:
+  profiles: dev
+
+message: DEV Environment
+
+---
+spring:
+  profiles: stage
+
+message: STAGE Environment
+
+---
+spring:
+  profiles: prod
+
+message: PROD Environment
+
+---
