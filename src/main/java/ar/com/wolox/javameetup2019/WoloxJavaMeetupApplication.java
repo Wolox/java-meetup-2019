@@ -17,10 +17,11 @@ public class WoloxJavaMeetupApplication {
 
 	@Bean
 	public ServletRegistrationBean servletRegistrationBean() {
-		ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet(),
+		ServletRegistrationBean registration = new ServletRegistrationBean(
+				new CamelHttpTransportServlet(),
 				"/*");
 		registration.setName("CamelServlet");
 		return registration;
 	}
-
+	
 }
