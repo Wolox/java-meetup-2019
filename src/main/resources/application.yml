@@ -7,17 +7,26 @@ camel.springboot.shutdownTimeout: 2
 spring:
   profiles: dev
 
+fromRoute: file:data/dev/input?delete=true&readLock=none
+toRoute: file:data/output
+
 message: DEV Environment
 
 ---
 spring:
   profiles: stage
 
+fromRoute: file:data/stage/input?delete=true&readLock=none
+toRoute: file:data/output
+
 message: STAGE Environment
 
 ---
 spring:
   profiles: prod
+
+fromRoute: file:data/prod/input?delete=true&readLock=none
+toRoute: file:data/output
 
 message: PROD Environment
 
