@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @Component
 @ActiveProfiles("dev")
-public class SimpleCamelRoute extends RouteBuilder {
+public class RestConfigurationRoute extends RouteBuilder {
 
     @Autowired
     Environment environment;
@@ -27,7 +27,8 @@ public class SimpleCamelRoute extends RouteBuilder {
         rest()
             .get("/hello").to("direct:hello")
             .get("/bye").to("direct:bye")
-            .get("/test-environment").to("direct:test-environment");
+            .get("/test-environment").to("direct:test-environment")
+            .get("/move-files").to("direct:move-files");
 
         from("direct:hello")
             .transform().constant("Hello World!");
