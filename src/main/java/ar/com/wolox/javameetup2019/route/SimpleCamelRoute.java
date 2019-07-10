@@ -14,8 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleCamelRoute extends RouteBuilder {
 
+	private static final String A = "mock:result";
+
 	@Autowired
-	Environment environment;
+	private Environment environment;
 
 	@Autowired
 	private JerigonzaProcessor jerigonzaProcessor;
@@ -54,18 +56,18 @@ public class SimpleCamelRoute extends RouteBuilder {
 
 				.responseMessage()
 				.code(HttpStatus.BAD_REQUEST.value())
-				.message("Bad request")
+				.message("The request didn't have the correct structure")
 				.endResponseMessage()
 
 				.responseMessage()
 				.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-				.message("Internal server error")
+				.message("The server is not responding correctly")
 				.endResponseMessage()
 
 				.outType(Product.class)
 
 				.route()
-				.to("mock:result");
+				.to(A);
 
 		rest()
 				.get("/hello").to("direct:hello")
@@ -80,7 +82,7 @@ public class SimpleCamelRoute extends RouteBuilder {
 
 		from("direct:test-environment")
 				.transform().constant("Environment: " + environment.getProperty("message"));
- 
+
 
 	}
 }
