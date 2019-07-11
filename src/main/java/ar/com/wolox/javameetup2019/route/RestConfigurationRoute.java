@@ -27,8 +27,9 @@ public class RestConfigurationRoute extends RouteBuilder {
         rest()
             .get("/hello").to("direct:hello")
             .get("/bye").to("direct:bye")
-            .get("/test-environment").to("direct:test-environment")
-            .get("/move-files").to("direct:move-files");
+            .get("/test-env").to("direct:test-environment")
+            .get("/move-files").to("direct:move-files")
+            .get("/students").to("direct:get-students-db");
 
         from("direct:hello")
             .transform().constant("Hello World!");
