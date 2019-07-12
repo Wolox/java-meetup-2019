@@ -27,8 +27,8 @@ public class CamelRouter extends RouteBuilder {
 	private static final String DOCUMENT_TYPE_ERROR_CODE = "-3";
 
 	private static final String RESPONSE_OK = "OK";
-	private static final String RESPONSE_ERROR = "Server error";
-	private static final String INPUT_PARAM_ERROR = "Bad input param";
+	private static final String RESPONSE_ERROR = "Internal Server error";
+	private static final String BAD_REQUEST = "Bad request";
 	private static final String CODE = "code";
 	private static final String DETAIL = "detail";
 
@@ -102,7 +102,7 @@ public class CamelRouter extends RouteBuilder {
 				.type(RestParamType.query)
 				.endParam()
 				.responseMessage().code(200).message(RESPONSE_OK).endResponseMessage()
-				.responseMessage().code(400).message(INPUT_PARAM_ERROR).endResponseMessage()
+				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR).endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
@@ -125,7 +125,7 @@ public class CamelRouter extends RouteBuilder {
 				.type(RestParamType.query)
 				.endParam()
 				.responseMessage().code(200).message(RESPONSE_OK).endResponseMessage()
-				.responseMessage().code(400).message(INPUT_PARAM_ERROR).endResponseMessage()
+				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR).endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
@@ -148,7 +148,7 @@ public class CamelRouter extends RouteBuilder {
 				.type(BodyInput.class)
 				.description("Carga o registro de un cliente")
 				.responseMessage().code(200).message(RESPONSE_OK).endResponseMessage()
-				.responseMessage().code(400).message(INPUT_PARAM_ERROR).endResponseMessage()
+				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR)
 				.responseModel(ErrorProcessor.class).endResponseMessage()
 				.route()
