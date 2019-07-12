@@ -21,7 +21,6 @@ public class DbAccessRoute extends RouteBuilder {
 	private static final String CHARSET = "application/json; charset=utf-8";
 	private static final String DOCUMENT_ERROR_MESSAGE = "El documento ingresado ya existe.";
 	private static final String DOCUMENT_ERROR_CODE = "-2";
-
 	private static final String CODE = "code";
 	private static final String DETAIL = "detail";
 

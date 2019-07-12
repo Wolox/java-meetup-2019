@@ -26,7 +26,6 @@ public class CamelRouter extends RouteBuilder {
 	private static final String BODY_ERROR_CODE = "-1";
 	private static final String DOCUMENT_TYPE_ERROR_MESSAGE = "Tipo de documento invalido. La busqueda se filtra por dni o cuil.";
 	private static final String DOCUMENT_TYPE_ERROR_CODE = "-3";
-
 	private static final String RESPONSE_OK = "OK";
 	private static final String RESPONSE_ERROR = "Internal Server error";
 	private static final String BAD_REQUEST = "Bad request";
@@ -81,7 +80,6 @@ public class CamelRouter extends RouteBuilder {
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
 				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
 
-
 		onException(InvalidInputException.class, InvalidCuilException.class)
 				.handled(true)
 				.setProperty(CODE, simple("-4"))
@@ -89,7 +87,6 @@ public class CamelRouter extends RouteBuilder {
 				.process(errorProcessor)
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
 				.setHeader(Exchange.CONTENT_TYPE, constant(400));
-
 
 		rest("meetup2019/client")
 				// GET
