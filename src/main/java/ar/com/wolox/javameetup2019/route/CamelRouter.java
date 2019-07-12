@@ -5,6 +5,7 @@ import ar.com.wolox.javameetup2019.exceptions.InvalidCuilException;
 import ar.com.wolox.javameetup2019.exceptions.InvalidDocumentTypeException;
 import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
+import ar.com.wolox.javameetup2019.pojo.StandardResponse;
 import ar.com.wolox.javameetup2019.processor.ErrorProcessor;
 import ar.com.wolox.javameetup2019.processor.SetCuilPropertyProcessor;
 import ar.com.wolox.javameetup2019.processor.SetDniPropertyProcessor;
@@ -51,9 +52,8 @@ public class CamelRouter extends RouteBuilder {
 	public void configure() throws Exception {
 		restConfiguration()
 				.apiContextPath("/api-docs")
-				.apiProperty("api.title", "pom-people-query-adapter")
-				.apiProperty("api.description",
-						"REST API exposed by Springboot & Fuse compatible with RHOAR")
+				.apiProperty("api.title", "java-meetup-2019")
+				.apiProperty("api.description", "ABM de un cliente")
 				.apiProperty("api.version", "1.0-SNAPSHOT")
 				.apiProperty("cors", "true")
 				.apiProperty("base.path", "/")
@@ -101,9 +101,11 @@ public class CamelRouter extends RouteBuilder {
 				.required(true)
 				.type(RestParamType.query)
 				.endParam()
-				.responseMessage().code(200).message(RESPONSE_OK).endResponseMessage()
+				.responseMessage().code(200).message(RESPONSE_OK)
+				.responseModel(StandardResponse.class).endResponseMessage()
 				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
-				.responseMessage().code(500).message(RESPONSE_ERROR).endResponseMessage()
+				.responseMessage().code(500).message(RESPONSE_ERROR)
+				.responseModel(ErrorProcessor.class).endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
 				.to("direct:get-client-name")
@@ -124,9 +126,11 @@ public class CamelRouter extends RouteBuilder {
 				.required(true)
 				.type(RestParamType.query)
 				.endParam()
-				.responseMessage().code(200).message(RESPONSE_OK).endResponseMessage()
+				.responseMessage().code(200).message(RESPONSE_OK)
+				.responseModel(StandardResponse.class).endResponseMessage()
 				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
-				.responseMessage().code(500).message(RESPONSE_ERROR).endResponseMessage()
+				.responseMessage().code(500).message(RESPONSE_ERROR)
+				.responseModel(ErrorProcessor.class).endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
 				.process(setTypePropertyProcessor)
@@ -147,7 +151,8 @@ public class CamelRouter extends RouteBuilder {
 				.post()
 				.type(BodyInput.class)
 				.description("Carga o registro de un cliente")
-				.responseMessage().code(200).message(RESPONSE_OK).endResponseMessage()
+				.responseMessage().code(200).message(RESPONSE_OK)
+				.responseModel(StandardResponse.class).endResponseMessage()
 				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR)
 				.responseModel(ErrorProcessor.class).endResponseMessage()
