@@ -15,7 +15,7 @@ public class Client {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CLIENT_SEQ")
 	@SequenceGenerator(name = "CLIENT_SEQ", sequenceName = "CLIENT_SEQ")
-	private String clientId;
+	private long clientId;
 
 	@Column
 	private String name;
@@ -23,27 +23,26 @@ public class Client {
 	private String lastName;
 	@Column
 	private String documentType;
-	@Column
+	@Column(unique = true)
 	private String documentNumber;
 
 
 	public Client() {
 	}
 
-	public Client(String clientId, String name, String lastName, String documentType,
-			String documentNumber) {
-		this.clientId = clientId;
+
+	public Client(String name, String lastName, String documentType, String documentNumber) {
 		this.name = name;
 		this.lastName = lastName;
 		this.documentType = documentType;
 		this.documentNumber = documentNumber;
 	}
 
-	public String getClientId() {
+	public long getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(String clientId) {
+	public void setClientId(long clientId) {
 		this.clientId = clientId;
 	}
 

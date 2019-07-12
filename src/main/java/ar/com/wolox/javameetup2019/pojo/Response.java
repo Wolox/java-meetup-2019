@@ -2,47 +2,29 @@ package ar.com.wolox.javameetup2019.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.List;
 
-@JsonPropertyOrder({"path", "status", "http_code", "error"})
+@JsonPropertyOrder({"path", "method", "error"})
 public class Response {
 
 	@JsonProperty("path")
 	private String path;
 
-	@JsonProperty("status")
-	private String status;
-
-	@JsonProperty("http_code")
-	private String httpCode;
+	@JsonProperty("method")
+	private String method;
 
 	@JsonProperty("error")
-	private Error error;
+	private List<Error> errors;
 
 	public Response() {
 	}
 
-	public String getStatus() {
-		return status;
+	public List<Error> getErrors() {
+		return errors;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getHttpCode() {
-		return httpCode;
-	}
-
-	public void setHttpCode(String httpCode) {
-		this.httpCode = httpCode;
-	}
-
-	public Error getError() {
-		return error;
-	}
-
-	public void setError(Error error) {
-		this.error = error;
+	public void setErrors(List<Error> error) {
+		this.errors = error;
 	}
 
 	public String getPath() {
@@ -51,5 +33,13 @@ public class Response {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
 	}
 }

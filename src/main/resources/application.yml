@@ -13,8 +13,6 @@ spring:
       path: /h2-console
 
 camel.springboot.shutdownTimeout: 2
-server.port: 8081
-camel.component.servlet.mapping.contextPath: /meetup2019/*
 
 ---
 spring:
