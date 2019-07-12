@@ -1,42 +1,66 @@
 package ar.com.wolox.javameetup2019.route;
 
+import ar.com.wolox.javameetup2019.helpers.Constants;
+import ar.com.wolox.javameetup2019.pojo.Request;
+import ar.com.wolox.javameetup2019.pojo.Response;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.apache.camel.model.rest.RestParamType;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ActiveProfiles;
 
 @Component
-@ActiveProfiles("dev")
 public class RestConfigurationRoute extends RouteBuilder {
 
-    @Autowired
-    Environment environment;
+	@Override
+	public void configure() throws Exception {
 
-    @Override
-    public void configure() throws Exception {
+		restConfiguration()
+				.bindingMode(RestBindingMode.json)
+				.port("8080")
+				.host("localhost")
+				.component("servlet");
 
+		rest(Constants.PROCESS_TEXT)
+				.post()
+				.description("This endpoint receives a JSON body with a text to analyze (in "
+						+ "Spanish), scans it for spelling mistakes, corrects them and "
+						+ "provides the possibility to translate the result to jerigonza.")
 
-        restConfiguration()
-                .bindingMode(RestBindingMode.json)
-                .port("8080")
-                .host("localhost")
-                .component("servlet");
+				.type(Request.class)
 
-        rest()
-            .get("/hello").to("direct:hello")
-            .get("/bye").to("direct:bye")
-            .get("/test-env").to("direct:test-environment")
-            .get("/move-files").to("direct:move-files")
-            .get("/students").to("direct:get-students-db");
+				.param()
+				.type(RestParamType.header)
+				.name("convert")
+				.description("If it's true, it converts the resulting text in jerigonza. "
+						+ "If false or no value is provided, it returns the text with no "
+						+ "processing. ")
+				.allowableValues("true", "false")
+				.required(false)
+				.endParam()
 
-        from("direct:hello")
-            .transform().constant("Hello World!");
-        from("direct:bye")
-            .transform().constant("Bye World");
-        from("direct:test-environment")
-            .transform().constant("Environment: " + environment.getProperty("message"));
+				.responseMessage()
+				.message("Success!")
+				.code(HttpStatus.OK.value())
+				.endResponseMessage()
 
-    }
+				.responseMessage()
+				.message("The request didn't have the correct structure.")
+				.code(HttpStatus.BAD_REQUEST.value())
+				.endResponseMessage()
+
+				.responseMessage()
+				.message("The server is not responding correctly.")
+				.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+				.endResponseMessage()
+
+				.outType(Response.class)
+
+				.to(Constants.VALIDATE_TEXT);
+
+		from(Constants.VALIDATE_TEXT)
+				// TODO
+				.to(Constants.RESULT_ENDPOINT);
+
+	}
 }
