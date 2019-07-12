@@ -6,9 +6,9 @@ import ar.com.wolox.javameetup2019.exceptions.InvalidDocumentTypeException;
 import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.pojo.StandardResponse;
-import ar.com.wolox.javameetup2019.processor.ErrorProcessor;
-import ar.com.wolox.javameetup2019.processor.SetCuilPropertyProcessor;
-import ar.com.wolox.javameetup2019.processor.SetDniPropertyProcessor;
+import ar.com.wolox.javameetup2019.processor.ErrorResponseProcessor;
+import ar.com.wolox.javameetup2019.processor.SetCuilNumberProcessor;
+import ar.com.wolox.javameetup2019.processor.SetDniNumberProcessor;
 import ar.com.wolox.javameetup2019.processor.SetMetaPropertiesProcessor;
 import ar.com.wolox.javameetup2019.processor.SetTypePropertyProcessor;
 import org.apache.camel.Exchange;
@@ -33,19 +33,19 @@ public class CamelRouter extends RouteBuilder {
 	private static final String DETAIL = "detail";
 
 	@Autowired
-	private ErrorProcessor errorProcessor;
+	private ErrorResponseProcessor errorResponseProcessor;
 
 	@Autowired
 	private SetMetaPropertiesProcessor setMetaPropertiesProcessor;
 
 	@Autowired
-	private SetCuilPropertyProcessor setCuilPropertyProcessor;
+	private SetCuilNumberProcessor setCuilNumberProcessor;
 
 	@Autowired
 	private SetTypePropertyProcessor setTypePropertyProcessor;
 
 	@Autowired
-	private SetDniPropertyProcessor setDniPropertyProcessor;
+	private SetDniNumberProcessor setDniNumberProcessor;
 
 	@Override
 	public void configure() throws Exception {
@@ -68,7 +68,7 @@ public class CamelRouter extends RouteBuilder {
 				.handled(true)
 				.setProperty(DETAIL, simple(BODY_ERROR_MESSAGE))
 				.setProperty(CODE, simple(BODY_ERROR_CODE))
-				.process(errorProcessor)
+				.process(errorResponseProcessor)
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
 				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
 
@@ -76,7 +76,7 @@ public class CamelRouter extends RouteBuilder {
 				.handled(true)
 				.setProperty(DETAIL, simple(DOCUMENT_TYPE_ERROR_MESSAGE))
 				.setProperty(CODE, simple(DOCUMENT_TYPE_ERROR_CODE))
-				.process(errorProcessor)
+				.process(errorResponseProcessor)
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
 				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
 
@@ -84,7 +84,7 @@ public class CamelRouter extends RouteBuilder {
 				.handled(true)
 				.setProperty(CODE, simple("-4"))
 				.setProperty(DETAIL, simple("${property.CamelExceptionCaught.message}"))
-				.process(errorProcessor)
+				.process(errorResponseProcessor)
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
 				.setHeader(Exchange.CONTENT_TYPE, constant(400));
 
@@ -102,7 +102,7 @@ public class CamelRouter extends RouteBuilder {
 				.responseModel(StandardResponse.class).endResponseMessage()
 				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR)
-				.responseModel(ErrorProcessor.class).endResponseMessage()
+				.responseModel(ErrorResponseProcessor.class).endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
 				.to("direct:get-client-name")
@@ -127,17 +127,17 @@ public class CamelRouter extends RouteBuilder {
 				.responseModel(StandardResponse.class).endResponseMessage()
 				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR)
-				.responseModel(ErrorProcessor.class).endResponseMessage()
+				.responseModel(ErrorResponseProcessor.class).endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
 				.process(setTypePropertyProcessor)
 				.choice()
 					.when(exchangeProperty("type").isEqualTo("dni"))
-					.process(setDniPropertyProcessor)
+					.process(setDniNumberProcessor)
 					.to("direct:get-client-document")
 				.otherwise()
 					.when(exchangeProperty("type").isEqualTo("cuil"))
-					.process(setCuilPropertyProcessor)
+					.process(setCuilNumberProcessor)
 					.to("direct:get-client-document")
 				.otherwise()
 					.throwException(InvalidDocumentTypeException.class, DOCUMENT_TYPE_ERROR_MESSAGE)
@@ -152,7 +152,7 @@ public class CamelRouter extends RouteBuilder {
 				.responseModel(StandardResponse.class).endResponseMessage()
 				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
 				.responseMessage().code(500).message(RESPONSE_ERROR)
-				.responseModel(ErrorProcessor.class).endResponseMessage()
+				.responseModel(ErrorResponseProcessor.class).endResponseMessage()
 				.route()
 				.choice()
 					.when(body().isNull())

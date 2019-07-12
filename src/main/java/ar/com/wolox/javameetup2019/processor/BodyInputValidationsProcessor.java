@@ -21,10 +21,10 @@ public class BodyInputValidationsProcessor implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		BodyInput bodyInput = exchange.getIn().getBody(BodyInput.class);
 
-		String name = bodyInput.getName();
-		String lastName = bodyInput.getLastName();
-		String documentType = bodyInput.getDocumentType();
-		String documentNumber = bodyInput.getDocumentNumber();
+		String name = bodyInput.getName().toLowerCase().trim();
+		String lastName = bodyInput.getLastName().toLowerCase().trim();
+		String documentType = bodyInput.getDocumentType().toLowerCase().trim();
+		String documentNumber = bodyInput.getDocumentNumber().replaceAll("-","").trim();
 
 		if(name.isEmpty() || name == null){
 			throw new InvalidInputException("El campo name no fue ingresado.");
@@ -37,7 +37,7 @@ public class BodyInputValidationsProcessor implements Processor {
 		if(documentType.isEmpty() || documentType == null){
 			throw new InvalidInputException("El campo document_type no fue ingresado.");
 		}else{
-			if(!documentType.toLowerCase().equals("dni") && !documentType.toLowerCase().equals("cuil")){
+			if(!documentType.equals("dni") && !documentType.equals("cuil")){
 				throw new InvalidInputException("El campo document_type es incorrecto. El tipo solo puede ser dni o cuil");
 			}
 		}
@@ -45,16 +45,21 @@ public class BodyInputValidationsProcessor implements Processor {
 		if(documentNumber.isEmpty() || documentNumber == null){
 			throw new InvalidInputException("El campo document_number no fue ingresado.");
 		}else{
-			if(documentType.toLowerCase().equals("dni")){
+			if(documentType.equals("dni")){
 				if (documentNumber.length() != 8 || !NumberUtils.isCreatable(documentNumber)){
 					throw new InvalidInputException("El dni ingresado es invalido.");
 				}
 			}else{
-				if (!Utils.validateCuil(documentNumber.replaceAll("-", "").trim())) {
+				if (!Utils.validateCuil(documentNumber)) {
 					throw new InvalidCuilException("El cuil ingresado es invalido.");
 				}
 			}
 		}
+
+		bodyInput.setName(name);
+		bodyInput.setLastName(lastName);
+		bodyInput.setDocumentType(documentType);
+		bodyInput.setDocumentNumber(documentNumber);
 
 		exchange.getIn().setBody(bodyInput);
 

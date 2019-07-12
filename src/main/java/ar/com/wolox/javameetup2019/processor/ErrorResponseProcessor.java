@@ -12,7 +12,7 @@ import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ErrorProcessor implements Processor {
+public class ErrorResponseProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {

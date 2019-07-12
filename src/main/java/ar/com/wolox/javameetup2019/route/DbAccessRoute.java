@@ -4,7 +4,7 @@ import ar.com.wolox.javameetup2019.exceptions.InvalidCuilException;
 import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.processor.BodyInputValidationsProcessor;
-import ar.com.wolox.javameetup2019.processor.ErrorProcessor;
+import ar.com.wolox.javameetup2019.processor.ErrorResponseProcessor;
 import ar.com.wolox.javameetup2019.processor.GetClientByDocumentProcessor;
 import ar.com.wolox.javameetup2019.processor.GetClientByNameProcessor;
 import ar.com.wolox.javameetup2019.processor.OkResponseProcessor;
@@ -25,7 +25,7 @@ public class DbAccessRoute extends RouteBuilder {
 	private static final String DETAIL = "detail";
 
 	@Autowired
-	private ErrorProcessor errorProcessor;
+	private ErrorResponseProcessor errorResponseProcessor;
 
 	@Autowired
 	private BodyInputValidationsProcessor bodyInputValidationsProcessor;
@@ -49,7 +49,7 @@ public class DbAccessRoute extends RouteBuilder {
 				.handled(true)
 				.setProperty(CODE, simple("-4"))
 				.setProperty(DETAIL, simple("${property.CamelExceptionCaught.message}"))
-				.process(errorProcessor)
+				.process(errorResponseProcessor)
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
 				.setHeader(Exchange.CONTENT_TYPE, constant(400));
 
@@ -71,7 +71,7 @@ public class DbAccessRoute extends RouteBuilder {
 					.handled(true)
 					.setProperty(DETAIL, simple(DOCUMENT_ERROR_MESSAGE))
 					.setProperty(CODE, simple(DOCUMENT_ERROR_CODE))
-					.process(errorProcessor)
+					.process(errorResponseProcessor)
 					.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
 					.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET))
 				.end()

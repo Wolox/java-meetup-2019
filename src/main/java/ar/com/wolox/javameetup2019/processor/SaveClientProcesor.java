@@ -18,8 +18,8 @@ public class SaveClientProcesor implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		BodyInput bodyInput = exchange.getIn().getBody(BodyInput.class);
 
-		Client client = new Client(bodyInput.getName().toLowerCase(), bodyInput.getLastName().toLowerCase(),
-				bodyInput.getDocumentType(), bodyInput.getDocumentNumber().replaceAll("-", "").trim());
+		Client client = new Client(bodyInput.getName(), bodyInput.getLastName(),
+				bodyInput.getDocumentType(), bodyInput.getDocumentNumber());
 
 		clientRepository.save(client);
 
