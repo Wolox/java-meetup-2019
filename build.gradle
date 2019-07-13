@@ -17,6 +17,7 @@ ext {
 apply from: "dependencies.gradle"
 
 dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.0.7.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: release.spring
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: release.spring
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: release.spring
@@ -26,8 +27,9 @@ dependencies {
     compile group: 'org.apache.camel', name: 'camel-sql-starter', version: release.camel
     compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: release.camel
     compile group: 'org.apache.camel', name: 'camel-jackson-starter', version: release.camel
-    runtime group: 'com.h2database', name: 'h2', version: release.h2
     compile group: 'org.apache.camel', name: 'camel-http', version: release.camel
+    runtime group: 'com.h2database', name: 'h2', version: release.h2
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.0.7.RELEASE'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: release.spring
 }
 

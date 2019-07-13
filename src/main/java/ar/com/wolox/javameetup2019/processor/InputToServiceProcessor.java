@@ -6,15 +6,12 @@ import ar.com.wolox.javameetup2019.helpers.ErrorConstants;
 import ar.com.wolox.javameetup2019.pojo.Request;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.camel.http.common.HttpMethods;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InputToServiceProcessor implements Processor {
-
-	@Value(value = "${service-method}")
-	private String serviceMethod;
-
+	
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		Request request = exchange.getIn().getBody(Request.class);
@@ -24,7 +21,7 @@ public class InputToServiceProcessor implements Processor {
 
 		exchange.getIn().setHeader(CamelConstants.HEADER_TEXT, request.getText());
 		exchange.getIn().setHeader(CamelConstants.HEADER_LANG, CamelConstants.LANG_ES);
-		exchange.getIn().setHeader(Exchange.HTTP_METHOD, serviceMethod);
+		exchange.getIn().setHeader(Exchange.HTTP_METHOD, HttpMethods.POST);
 
 	}
 }
