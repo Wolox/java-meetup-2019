@@ -1,6 +1,6 @@
 package ar.com.wolox.javameetup2019.processor;
 
-import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
+import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import ar.com.wolox.javameetup2019.model.Client;
 import ar.com.wolox.javameetup2019.repository.ClientRepository;
 import java.util.List;

@@ -1,9 +1,9 @@
 package ar.com.wolox.javameetup2019.route;
 
-import ar.com.wolox.javameetup2019.exceptions.BodyNullException;
-import ar.com.wolox.javameetup2019.exceptions.InvalidCuilException;
-import ar.com.wolox.javameetup2019.exceptions.InvalidDocumentTypeException;
-import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
+import ar.com.wolox.javameetup2019.exception.NullBodyException;
+import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
+import ar.com.wolox.javameetup2019.exception.InvalidDocumentTypeException;
+import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.pojo.StandardResponse;
 import ar.com.wolox.javameetup2019.processor.ErrorResponseProcessor;
@@ -64,7 +64,7 @@ public class CamelRouter extends RouteBuilder {
 				.component("servlet")
 				.bindingMode(RestBindingMode.json);
 
-		onException(BodyNullException.class)
+		onException(NullBodyException.class)
 				.handled(true)
 				.setProperty(DETAIL, simple(BODY_ERROR_MESSAGE))
 				.setProperty(CODE, simple(BODY_ERROR_CODE))
@@ -156,7 +156,7 @@ public class CamelRouter extends RouteBuilder {
 				.route()
 				.choice()
 					.when(body().isNull())
-					.throwException(BodyNullException.class, BODY_ERROR_MESSAGE)
+					.throwException(NullBodyException.class, BODY_ERROR_MESSAGE)
 				.otherwise()
 					.process(setMetaPropertiesProcessor)
 					.to("direct:save-client")

@@ -1,8 +1,8 @@
 package ar.com.wolox.javameetup2019.processor;
 
-import ar.com.wolox.javameetup2019.exceptions.InvalidCuilException;
-import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
-import ar.com.wolox.javameetup2019.helpers.Utils;
+import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
+import ar.com.wolox.javameetup2019.exception.InvalidInputException;
+import ar.com.wolox.javameetup2019.helper.ValidationUtils;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.repository.ClientRepository;
 import org.apache.camel.Exchange;
@@ -50,7 +50,7 @@ public class BodyInputValidationsProcessor implements Processor {
 					throw new InvalidInputException("El dni ingresado es invalido.");
 				}
 			}else{
-				if (!Utils.validateCuil(documentNumber)) {
+				if (!ValidationUtils.validateCuil(documentNumber)) {
 					throw new InvalidCuilException("El cuil ingresado es invalido.");
 				}
 			}

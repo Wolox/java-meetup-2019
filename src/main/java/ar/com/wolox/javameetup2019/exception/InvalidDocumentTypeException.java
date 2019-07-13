@@ -1,4 +1,4 @@
-package ar.com.wolox.javameetup2019.exceptions;
+package ar.com.wolox.javameetup2019.exception;
 
 public class InvalidDocumentTypeException extends Exception {
 

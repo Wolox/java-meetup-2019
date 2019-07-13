@@ -1,7 +1,7 @@
 package ar.com.wolox.javameetup2019.route;
 
-import ar.com.wolox.javameetup2019.exceptions.InvalidCuilException;
-import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
+import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
+import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.processor.BodyInputValidationsProcessor;
 import ar.com.wolox.javameetup2019.processor.ErrorResponseProcessor;

@@ -1,15 +1,14 @@
-package ar.com.wolox.javameetup2019.helpers;
+package ar.com.wolox.javameetup2019.helper;
 
 
-import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
+import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 
-@Component
-public class Utils {
+public class ValidationUtils {
 
-	public Utils() {
-		//Utils
+	private ValidationUtils() {
+
 	}
 
 	public static boolean validateCuil(String cuil) throws InvalidInputException {

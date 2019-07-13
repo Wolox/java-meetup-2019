@@ -1,7 +1,7 @@
 package ar.com.wolox.javameetup2019.processor;
 
-import ar.com.wolox.javameetup2019.exceptions.InvalidCuilException;
-import ar.com.wolox.javameetup2019.helpers.Utils;
+import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
+import ar.com.wolox.javameetup2019.helper.ValidationUtils;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class SetCuilNumberProcessor implements Processor {
 		String cuil = exchange.getIn().getHeader("document_number", String.class).trim();
 		cuil = cuil.replaceAll("-", "");
 
-		if (!Utils.validateCuil(cuil)) {
+		if (!ValidationUtils.validateCuil(cuil)) {
 			throw new InvalidCuilException("El cuil ingresado es invalido.");
 		}
 

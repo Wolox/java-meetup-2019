@@ -1,7 +1,7 @@
 package ar.com.wolox.javameetup2019.processor;
 
 
-import ar.com.wolox.javameetup2019.exceptions.InvalidInputException;
+import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.commons.lang3.math.NumberUtils;

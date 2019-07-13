@@ -15,7 +15,7 @@ public class Client {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CLIENT_SEQ")
 	@SequenceGenerator(name = "CLIENT_SEQ", sequenceName = "CLIENT_SEQ")
-	private long clientId;
+	private long id;
 
 	@Column
 	private String name;
@@ -38,12 +38,12 @@ public class Client {
 		this.documentNumber = documentNumber;
 	}
 
-	public long getClientId() {
-		return clientId;
+	public long getId() {
+		return id;
 	}
 
-	public void setClientId(long clientId) {
-		this.clientId = clientId;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getName() {
