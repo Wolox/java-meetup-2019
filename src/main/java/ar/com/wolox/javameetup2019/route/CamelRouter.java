@@ -1,6 +1,6 @@
 package ar.com.wolox.javameetup2019.route;
 
-import ar.com.wolox.javameetup2019.helpers.Constants;
+import ar.com.wolox.javameetup2019.helpers.CamelConstants;
 import ar.com.wolox.javameetup2019.pojo.Request;
 import ar.com.wolox.javameetup2019.pojo.Response;
 import org.apache.camel.builder.RouteBuilder;
@@ -21,13 +21,11 @@ public class CamelRouter extends RouteBuilder {
 				.apiProperty("api.description", "Demo project")
 				.apiProperty("api.version", "1.0-SNAPSHOT")
 				.apiProperty("cors", "true")
-				.apiProperty("base.path", "/")
-				.apiProperty("api.path", "/")
 				.apiProperty("host", "")
 				.apiContextRouteId("doc-api")
 				.bindingMode(RestBindingMode.json);
 
-		rest(Constants.PROCESS_TEXT)
+		rest(CamelConstants.PROCESS_TEXT)
 				.post()
 				.description("This endpoint receives a JSON body with a text to analyze (in "
 						+ "Spanish), scans it for spelling mistakes, corrects them and "
@@ -62,7 +60,7 @@ public class CamelRouter extends RouteBuilder {
 
 				.outType(Response.class)
 
-				.to(Constants.VALIDATE_TEXT);
-		
+				.to(CamelConstants.VALIDATE_TEXT);
+
 	}
 }
