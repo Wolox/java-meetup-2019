@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestConfigurationRoute extends RouteBuilder {
+public class CamelRouter extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
@@ -63,11 +63,6 @@ public class RestConfigurationRoute extends RouteBuilder {
 				.outType(Response.class)
 
 				.to(Constants.VALIDATE_TEXT);
-
-
-		from(Constants.VALIDATE_TEXT)
-				// TODO
-				.to(Constants.RESULT_ENDPOINT);
-
+		
 	}
 }
