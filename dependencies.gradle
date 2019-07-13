@@ -1,0 +1,7 @@
+ext {
+    release = [
+            camel: '2.24.0',
+            spring: '2.1.5.RELEASE',
+            h2: '1.4.199'
+    ]
+}

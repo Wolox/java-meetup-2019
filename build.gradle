@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+ext{
+    camelVersion2 = '2.24.0'
+}
+
+apply from: "dependencies.gradle"
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: release.spring
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: release.spring
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: release.spring
+    compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-servlet', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-test-spring', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-sql-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-jackson-starter', version: release.camel
+    runtime group: 'com.h2database', name: 'h2', version: release.h2
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: release.spring
+}
+
+group = 'wolox'
+version = '0.0.1-SNAPSHOT'
+description = 'java-meetup-2019'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
