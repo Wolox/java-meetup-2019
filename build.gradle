@@ -10,7 +10,7 @@ repositories {
     }
 }
 
-ext{
+ext {
     camelVersion2 = '2.24.0'
 }
 
@@ -27,6 +27,7 @@ dependencies {
     compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: release.camel
     compile group: 'org.apache.camel', name: 'camel-jackson-starter', version: release.camel
     runtime group: 'com.h2database', name: 'h2', version: release.h2
+    compile group: 'org.apache.camel', name: 'camel-http', version: release.camel
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: release.spring
 }
 

@@ -42,6 +42,7 @@ class ServiceRouter extends RouteBuilder {
 		from(CamelConstants.VALIDATE_TEXT)
 				.process(inputToServiceProcessor)
 				.to(serviceUrl)
+				.process(inputToServiceProcessor)
 				.to(CamelConstants.RESULT_ENDPOINT);
 
 	}
