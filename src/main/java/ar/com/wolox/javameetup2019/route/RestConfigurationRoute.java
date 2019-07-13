@@ -16,10 +16,16 @@ public class RestConfigurationRoute extends RouteBuilder {
 	public void configure() throws Exception {
 
 		restConfiguration()
-				.bindingMode(RestBindingMode.json)
-				.port("8080")
-				.host("localhost")
-				.component("servlet");
+				.apiContextPath("api-docs")
+				.apiProperty("api.title", "Java Meetup")
+				.apiProperty("api.description", "Demo project")
+				.apiProperty("api.version", "1.0-SNAPSHOT")
+				.apiProperty("cors", "true")
+				.apiProperty("base.path", "/")
+				.apiProperty("api.path", "/")
+				.apiProperty("host", "")
+				.apiContextRouteId("doc-api")
+				.bindingMode(RestBindingMode.json);
 
 		rest(Constants.PROCESS_TEXT)
 				.post()
@@ -57,6 +63,7 @@ public class RestConfigurationRoute extends RouteBuilder {
 				.outType(Response.class)
 
 				.to(Constants.VALIDATE_TEXT);
+
 
 		from(Constants.VALIDATE_TEXT)
 				// TODO
