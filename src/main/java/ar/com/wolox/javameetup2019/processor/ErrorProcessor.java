@@ -3,6 +3,7 @@ package ar.com.wolox.javameetup2019.processor;
 import ar.com.wolox.javameetup2019.helpers.CamelConstants;
 import ar.com.wolox.javameetup2019.pojo.Error;
 import ar.com.wolox.javameetup2019.pojo.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -22,8 +23,12 @@ public class ErrorProcessor implements Processor {
 
 		response.setResult("");
 		response.setErrors(Arrays.asList(error));
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(response);
 
-		exchange.getOut().setBody(response);
+		exchange.getOut().setBody(json);
 
 	}
 }

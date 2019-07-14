@@ -9,8 +9,10 @@ import ar.com.wolox.javameetup2019.processor.InputToServiceProcessor;
 import ar.com.wolox.javameetup2019.processor.JerigonzaProcessor;
 import ar.com.wolox.javameetup2019.processor.ResponseProcessor;
 import ar.com.wolox.javameetup2019.processor.ServiceResponseProcessor;
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -53,13 +55,17 @@ class ServiceRouter extends RouteBuilder {
 				.setProperty(CamelConstants.CODE, constant(ErrorConstants.SERVER_ERROR_CODE))
 				.setProperty(CamelConstants.DETAIL,
 						simple(ErrorConstants.SERVER_ERROR_DETAIL))
-				.process(errorProcessor);
+				.process(errorProcessor)
+				.setHeader(Exchange.HTTP_RESPONSE_CODE,
+						constant(HttpStatus.SC_INTERNAL_SERVER_ERROR));
 
 		onException(InvalidInputException.class)
 				.handled(true)
 				.setProperty(CamelConstants.DETAIL,
 						simple("${property.CamelExceptionCaught.message}"))
-				.process(errorProcessor);
+				.process(errorProcessor)
+				.setHeader(Exchange.HTTP_RESPONSE_CODE,
+						constant(HttpStatus.SC_BAD_REQUEST));
 
 		from(CamelConstants.VALIDATE_TEXT)
 				.process(inputToServiceProcessor)
