@@ -4,7 +4,7 @@ import ar.com.wolox.javameetup2019.helpers.CamelConstants;
 import ar.com.wolox.javameetup2019.pojo.Error;
 import ar.com.wolox.javameetup2019.pojo.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
+import java.util.Collections;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class ErrorProcessor implements Processor {
 		error.setDetail(exchange.getProperty(CamelConstants.DETAIL, String.class));
 
 		response.setResult("");
-		response.setErrors(Arrays.asList(error));
-		
+		response.setErrors(Collections.singletonList(error));
+
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writerWithDefaultPrettyPrinter()
 				.writeValueAsString(response);
