@@ -29,7 +29,8 @@ public class CamelRouter extends RouteBuilder {
 				.post()
 				.description("This endpoint receives a JSON body with a text to analyze (in "
 						+ "Spanish), scans it for spelling mistakes, corrects them and "
-						+ "provides the possibility to translate the result to jerigonza.")
+						+ "provides the possibility to translate the result to jerigonza. "
+						+ "The text must be in Spanish.")
 
 				.type(Request.class)
 
