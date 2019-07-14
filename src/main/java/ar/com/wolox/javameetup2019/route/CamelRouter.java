@@ -59,7 +59,7 @@ public class CamelRouter extends RouteBuilder {
 				.apiProperty("api.path", "/")
 				.apiProperty("host", "")
 				.apiContextRouteId("doc-api")
-				.port("8080")
+				.port("8085")
 				.host("localhost")
 				.component("servlet")
 				.bindingMode(RestBindingMode.json);
@@ -86,7 +86,7 @@ public class CamelRouter extends RouteBuilder {
 				.setProperty(DETAIL, simple("${property.CamelExceptionCaught.message}"))
 				.process(errorResponseProcessor)
 				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
-				.setHeader(Exchange.CONTENT_TYPE, constant(400));
+				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
 
 		rest("meetup2019/client")
 				// GET

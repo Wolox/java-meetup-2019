@@ -2,6 +2,8 @@ package ar.com.wolox.javameetup2019.processor;
 
 import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
+import ar.com.wolox.javameetup2019.helper.MessageConstants;
+import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import ar.com.wolox.javameetup2019.helper.ValidationUtils;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.repository.ClientRepository;
@@ -26,32 +28,31 @@ public class BodyInputValidationsProcessor implements Processor {
 		String documentType = bodyInput.getDocumentType().toLowerCase().trim();
 		String documentNumber = bodyInput.getDocumentNumber().replaceAll("-","").trim();
 
-		if(name.isEmpty() || name == null){
-			throw new InvalidInputException("El campo name no fue ingresado.");
+		if(ValidationUtils.isEmptyString(name)){
+			throw new InvalidInputException(MessageConstants.EMPTY_NAME);
 		}
 
-		if(lastName.isEmpty() || lastName == null){
-			throw new InvalidInputException("El campo last_name no fue ingresado.");
+		if(ValidationUtils.isEmptyString(lastName)){
+			throw new InvalidInputException(MessageConstants.EMPTY_LASTNAME);
 		}
 
-		if(documentType.isEmpty() || documentType == null){
-			throw new InvalidInputException("El campo document_type no fue ingresado.");
+		if(ValidationUtils.isEmptyString(documentType)){
+			throw new InvalidInputException(MessageConstants.EMPTY_DOCUMENT_TYPE);
+		}else if(!documentType.equals(PropertiesConstants.PROPERTY_DNI) &&
+				!documentType.equals(PropertiesConstants.PROPERTY_CUIL)){
+					throw new InvalidInputException(MessageConstants.INCORRECT_DOCUMENT_TYPE);
+		}
+
+		if(ValidationUtils.isEmptyString(documentNumber)){
+			throw new InvalidInputException(MessageConstants.EMPTY_DOCUMENT_NUMBER);
 		}else{
-			if(!documentType.equals("dni") && !documentType.equals("cuil")){
-				throw new InvalidInputException("El campo document_type es incorrecto. El tipo solo puede ser dni o cuil");
-			}
-		}
-
-		if(documentNumber.isEmpty() || documentNumber == null){
-			throw new InvalidInputException("El campo document_number no fue ingresado.");
-		}else{
-			if(documentType.equals("dni")){
+			if(documentType.equals(PropertiesConstants.PROPERTY_DNI)){
 				if (documentNumber.length() != 8 || !NumberUtils.isCreatable(documentNumber)){
-					throw new InvalidInputException("El dni ingresado es invalido.");
+					throw new InvalidInputException(MessageConstants.INCORRECT_DNI);
 				}
 			}else{
 				if (!ValidationUtils.validateCuil(documentNumber)) {
-					throw new InvalidCuilException("El cuil ingresado es invalido.");
+					throw new InvalidCuilException(MessageConstants.INCORRECT_CUIL);
 				}
 			}
 		}

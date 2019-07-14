@@ -1,5 +1,6 @@
 package ar.com.wolox.javameetup2019.processor;
 
+import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import ar.com.wolox.javameetup2019.pojo.Response;
 import ar.com.wolox.javameetup2019.pojo.StandardResponse;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class OkResponseProcessor implements Processor {
 
 		StandardResponse standardResponse= new StandardResponse();
 		Response response= new Response();
-		response.setMethod(exchange.getProperty("method", String.class));
-		response.setPath(exchange.getProperty("path", String.class));
+		response.setMethod(exchange.getProperty(PropertiesConstants.PROPERTY_METHOD, String.class));
+		response.setPath(exchange.getProperty(PropertiesConstants.PROPERTY_PATH, String.class));
 		response.setErrors(Arrays.asList());
 
 		List data = new ArrayList();

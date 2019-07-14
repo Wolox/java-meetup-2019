@@ -1,5 +1,6 @@
 package ar.com.wolox.javameetup2019.processor;
 
+import ar.com.wolox.javameetup2019.helper.MessageConstants;
 import ar.com.wolox.javameetup2019.model.Client;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.repository.ClientRepository;
@@ -23,7 +24,7 @@ public class SaveClientProcesor implements Processor {
 
 		clientRepository.save(client);
 
-		exchange.getIn().setBody("El cliente fue guardado con exito.");
+		exchange.getIn().setBody(MessageConstants.SAVED_CLIENT);
 
 	}
 }

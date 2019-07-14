@@ -8,13 +8,19 @@ import org.springframework.stereotype.Component;
 public class ValidationUtils {
 
 	private ValidationUtils() {
-
+		// Private constructor to avoid instances, there are only static methods/attributes
 	}
 
+	/**
+	 * Cuil validation method
+	 * @param cuil
+	 * @return Boolean
+	 * @throws InvalidInputException
+	 */
 	public static boolean validateCuil(String cuil) throws InvalidInputException {
 
 		if (cuil.length() != 11 || !NumberUtils.isCreatable(cuil)){
-			throw new InvalidInputException("El cuil ingresado no es valido (se requieren 11 caracteres numericos).");
+			throw new InvalidInputException(MessageConstants.INVALID_CUIL);
 		}
 
 		String[] cuitArray = cuil.split("");
@@ -33,8 +39,12 @@ public class ValidationUtils {
 		} else if (aux == 10) {
 			aux = 9;
 		}
-		return Integer.valueOf(cuitArray[10]) == aux;
+		return (Integer.valueOf(cuitArray[10]) == aux);
+	}
 
+
+	public static boolean isEmptyString(String stringToValidate){
+		return (stringToValidate == null || stringToValidate.isEmpty());
 	}
 
 }

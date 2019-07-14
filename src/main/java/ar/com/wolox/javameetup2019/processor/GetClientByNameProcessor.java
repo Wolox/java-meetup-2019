@@ -1,6 +1,9 @@
 package ar.com.wolox.javameetup2019.processor;
 
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
+import ar.com.wolox.javameetup2019.helper.MessageConstants;
+import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
+import ar.com.wolox.javameetup2019.helper.ValidationUtils;
 import ar.com.wolox.javameetup2019.model.Client;
 import ar.com.wolox.javameetup2019.repository.ClientRepository;
 import java.util.List;
@@ -17,18 +20,18 @@ public class GetClientByNameProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		String name = (String) exchange.getIn().getHeader("name");
+		String name = (String) exchange.getIn().getHeader(PropertiesConstants.PROPERTY_NAME);
 
-		if(name.isEmpty() || name == null){
-			throw new InvalidInputException("El parametro name no fue ingresado.");
+		if(ValidationUtils.isEmptyString(name)){
+			throw new InvalidInputException(MessageConstants.EMPTY_NAME);
 		}
 
 		name = name.toLowerCase();
 
 		List<Client> clients = clientRepository.findByName(name);
 
-		if(clients.isEmpty() || clients == null){
-			exchange.getIn().setBody("No existen clientes registrados con el nombre ingresado.");
+		if(clients == null || clients.isEmpty()){
+			exchange.getIn().setBody(MessageConstants.NONEXISTENT_CLIENT);
 		}else{
 			exchange.getIn().setBody(clientRepository.findByName(name));
 		}

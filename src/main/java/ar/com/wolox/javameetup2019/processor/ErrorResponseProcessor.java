@@ -1,5 +1,6 @@
 package ar.com.wolox.javameetup2019.processor;
 
+import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import ar.com.wolox.javameetup2019.pojo.Error;
 import ar.com.wolox.javameetup2019.pojo.Response;
 import ar.com.wolox.javameetup2019.pojo.StandardResponse;
@@ -20,16 +21,16 @@ public class ErrorResponseProcessor implements Processor {
 		List errors = new ArrayList();
 
 		Error error = new Error();
-		error.setMessage(exchange.getProperty("detail", String.class));
-		error.setCode(exchange.getProperty("code", String.class));
+		error.setMessage(exchange.getProperty(PropertiesConstants.PROPERTY_DETAIL, String.class));
+		error.setCode(exchange.getProperty(PropertiesConstants.PROPERTY_CODE, String.class));
 
 		errors.add(error);
 
 		Response response = new Response();
 
-		response.setMethod(exchange.getProperty("method", String.class));
+		response.setMethod(exchange.getProperty(PropertiesConstants.PROPERTY_METHOD, String.class));
 
-		response.setPath(exchange.getProperty("path", String.class));
+		response.setPath(exchange.getProperty(PropertiesConstants.PROPERTY_PATH, String.class));
 		response.setErrors(errors);
 
 		restResponse.setResponse(response);
