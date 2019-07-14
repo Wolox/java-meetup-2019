@@ -11,17 +11,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InputToServiceProcessor implements Processor {
-	
+
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		Request request = exchange.getIn().getBody(Request.class);
-		if (request == null) {
+		Boolean convert = exchange.getIn()
+				.getHeader(CamelConstants.HEADER_CONVERT, Boolean.class);
+
+		if (request == null || request.getText() == null) {
+			exchange.setProperty(CamelConstants.CODE, ErrorConstants.INVALID_INPUT_CODE);
 			throw new InvalidInputException(ErrorConstants.INVALID_INPUT_DETAIL);
 		}
+		if (convert == null) {
+			exchange.setProperty(CamelConstants.CODE, ErrorConstants.MISSING_HEADER_CODE);
+			throw new InvalidInputException(ErrorConstants.MISSING_HEADER_DETAIL);
+		}
 
-		exchange.getIn().setHeader(CamelConstants.HEADER_TEXT, request.getText());
-		exchange.getIn().setHeader(CamelConstants.HEADER_LANG, CamelConstants.LANG_ES);
-		exchange.getIn().setHeader(Exchange.HTTP_METHOD, HttpMethods.POST);
+		exchange.setProperty(CamelConstants.HEADER_CONVERT, convert);
+		exchange.getOut().setBody("");
+		exchange.setProperty(CamelConstants.HEADER_TEXT, request.getText());
+		exchange.getOut().setHeader(Exchange.HTTP_METHOD, HttpMethods.POST);
 
 	}
 }

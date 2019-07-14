@@ -3,14 +3,17 @@ package ar.com.wolox.javameetup2019.route;
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import ar.com.wolox.javameetup2019.helpers.CamelConstants;
 import ar.com.wolox.javameetup2019.helpers.ErrorConstants;
+import ar.com.wolox.javameetup2019.pojo.service.ServiceResponse;
 import ar.com.wolox.javameetup2019.processor.ErrorProcessor;
 import ar.com.wolox.javameetup2019.processor.InputToServiceProcessor;
-import org.apache.camel.Exchange;
+import ar.com.wolox.javameetup2019.processor.JerigonzaProcessor;
+import ar.com.wolox.javameetup2019.processor.ResponseProcessor;
+import ar.com.wolox.javameetup2019.processor.ServiceResponseProcessor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,23 +29,48 @@ class ServiceRouter extends RouteBuilder {
 	private InputToServiceProcessor inputToServiceProcessor;
 
 	@Autowired
+	private ServiceResponseProcessor serviceResponseProcessor;
+
+	@Autowired
+	private JerigonzaProcessor jerigonzaProcessor;
+
+	@Autowired
 	private ErrorProcessor errorProcessor;
+
+	@Autowired
+	private ResponseProcessor responseProcessor;
+
+	private String getServiceUrl(String text) {
+		return String.format("%s?%s=%s&%s=%s", serviceUrl, CamelConstants.HEADER_TEXT, text,
+				CamelConstants.HEADER_LANG, CamelConstants.LANG_ES);
+	}
 
 	@Override
 	public void configure() throws Exception {
 
+		onException(Exception.class)
+				.handled(true)
+				.setProperty(CamelConstants.CODE, constant(ErrorConstants.SERVER_ERROR_CODE))
+				.setProperty(CamelConstants.DETAIL,
+						simple(ErrorConstants.SERVER_ERROR_DETAIL))
+				.process(errorProcessor);
+
 		onException(InvalidInputException.class)
 				.handled(true)
-				.setHeader(CamelConstants.CODE, constant(ErrorConstants.INVALID_INPUT_CODE))
-				.setHeader(CamelConstants.DETAIL,
+				.setProperty(CamelConstants.DETAIL,
 						simple("${property.CamelExceptionCaught.message}"))
-				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpStatus.BAD_REQUEST.value()))
 				.process(errorProcessor);
 
 		from(CamelConstants.VALIDATE_TEXT)
 				.process(inputToServiceProcessor)
-				.to(serviceUrl)
-				.process(inputToServiceProcessor)
+				.toD(getServiceUrl(String.format("${property.%s}", CamelConstants.HEADER_TEXT)))
+				.unmarshal().json(JsonLibrary.Jackson, ServiceResponse.class)
+				.process(serviceResponseProcessor)
+				.choice()
+				.when(exchangeProperty(CamelConstants.HEADER_CONVERT).isEqualTo(true))
+				.process(jerigonzaProcessor)
+				.end()
+				.process(responseProcessor)
 				.to(CamelConstants.RESULT_ENDPOINT);
 
 	}

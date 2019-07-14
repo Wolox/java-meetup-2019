@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"text"})
 public class Request {
 
-	@JsonProperty
+	@JsonProperty(required = true)
 	private String text;
 
 	public Request() {
@@ -22,4 +22,5 @@ public class Request {
 	public void setText(String text) {
 		this.text = text;
 	}
+	
 }

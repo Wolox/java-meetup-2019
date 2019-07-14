@@ -22,7 +22,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: release.spring
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: release.spring
     compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-servlet', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-servlet-starter', version: release.camel
     compile group: 'org.apache.camel', name: 'camel-test-spring', version: release.camel
     compile group: 'org.apache.camel', name: 'camel-sql-starter', version: release.camel
     compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: release.camel

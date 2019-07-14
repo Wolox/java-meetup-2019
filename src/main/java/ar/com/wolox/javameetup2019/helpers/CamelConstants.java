@@ -16,6 +16,10 @@ public class CamelConstants {
 	public static final String HEADER_TEXT = "text";
 	public static final String HEADER_LANG = "language";
 	public static final String LANG_ES = "es";
+	public static final String HEADER_CONVERT = "convert";
+
+	// Processing
+	public static final String REPLACEMENT_TAG = ",,,";
 
 	private CamelConstants() {
 

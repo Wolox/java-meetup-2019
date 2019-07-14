@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"data", "errors"})
+@JsonPropertyOrder({"result", "errors"})
 public class Response {
 
 	@JsonProperty
-	private List<String> data;
+	private String result;
 
 	@JsonProperty
 	private List<Error> errors;
@@ -19,12 +19,12 @@ public class Response {
 		/* Empty constructor for entity mapping */
 	}
 
-	public List<String> getData() {
-		return data;
+	public String getResult() {
+		return result;
 	}
 
-	public void setData(List<String> data) {
-		this.data = data;
+	public void setResult(String data) {
+		this.result = data;
 	}
 
 	public List<Error> getErrors() {
