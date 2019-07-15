@@ -3,13 +3,14 @@ package ar.com.wolox.javameetup2019.repository;
 
 import ar.com.wolox.javameetup2019.model.Client;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 
 public interface ClientRepository extends CrudRepository<Client, Long> {
 
-	List<Client> findByName(String name);
+	Optional<List<Client>> findByName(String name);
 
-	Client findOneByLastName(String lastName);
+	Optional<Client> findOneByDocumentNumber(String documentNumber);
 
-	Client findOneByDocumentNumber(String documentNumber);
 }

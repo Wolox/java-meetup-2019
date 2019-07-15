@@ -4,6 +4,8 @@ import ar.com.wolox.javameetup2019.exception.NullBodyException;
 import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
 import ar.com.wolox.javameetup2019.exception.InvalidDocumentTypeException;
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
+import ar.com.wolox.javameetup2019.helper.MessagesConstants;
+import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.pojo.StandardResponse;
 import ar.com.wolox.javameetup2019.processor.ErrorResponseProcessor;
@@ -16,21 +18,11 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.apache.camel.model.rest.RestParamType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CamelRouter extends RouteBuilder {
-
-	private static final String CHARSET = "application/json; charset=utf-8";
-	private static final String BODY_ERROR_MESSAGE = "Body inexistente. Por favor cargue los datos necesarios para dar de alta al cliente. ";
-	private static final String BODY_ERROR_CODE = "-1";
-	private static final String DOCUMENT_TYPE_ERROR_MESSAGE = "Tipo de documento invalido. La busqueda se filtra por dni o cuil.";
-	private static final String DOCUMENT_TYPE_ERROR_CODE = "-3";
-	private static final String RESPONSE_OK = "OK";
-	private static final String RESPONSE_ERROR = "Internal Server error";
-	private static final String BAD_REQUEST = "Bad request";
-	private static final String CODE = "code";
-	private static final String DETAIL = "detail";
 
 	@Autowired
 	private ErrorResponseProcessor errorResponseProcessor;
@@ -66,43 +58,54 @@ public class CamelRouter extends RouteBuilder {
 
 		onException(NullBodyException.class)
 				.handled(true)
-				.setProperty(DETAIL, simple(BODY_ERROR_MESSAGE))
-				.setProperty(CODE, simple(BODY_ERROR_CODE))
+				.setProperty(PropertiesConstants.PROPERTY_DETAIL, simple(MessagesConstants.EMPTY_BODY))
+				.setProperty(PropertiesConstants.PROPERTY_CODE, simple(PropertiesConstants.ERROR_CODE_EMPTY_BODY))
 				.process(errorResponseProcessor)
-				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
-				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
+				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+				.setHeader(Exchange.CONTENT_TYPE, constant(PropertiesConstants.VALUE_CHARSET));
 
 		onException(InvalidDocumentTypeException.class)
 				.handled(true)
-				.setProperty(DETAIL, simple(DOCUMENT_TYPE_ERROR_MESSAGE))
-				.setProperty(CODE, simple(DOCUMENT_TYPE_ERROR_CODE))
+				.setProperty(PropertiesConstants.PROPERTY_DETAIL, simple(MessagesConstants.INCORRECT_DOCUMENT_TYPE))
+				.setProperty(PropertiesConstants.PROPERTY_CODE,
+						simple(PropertiesConstants.ERROR_CODE_INCORRECT_DOCUMENT_TYPE))
 				.process(errorResponseProcessor)
-				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
-				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
+				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpStatus.BAD_REQUEST.value()))
+				.setHeader(Exchange.CONTENT_TYPE, constant(PropertiesConstants.VALUE_CHARSET));
 
 		onException(InvalidInputException.class, InvalidCuilException.class)
 				.handled(true)
-				.setProperty(CODE, simple("-4"))
-				.setProperty(DETAIL, simple("${property.CamelExceptionCaught.message}"))
+				.setProperty(PropertiesConstants.PROPERTY_CODE, simple("-4"))
+				.setProperty(PropertiesConstants.PROPERTY_DETAIL,
+						simple("${property.CamelExceptionCaught.message}"))
 				.process(errorResponseProcessor)
-				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
-				.setHeader(Exchange.CONTENT_TYPE, constant(CHARSET));
+				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpStatus.BAD_REQUEST.value()))
+				.setHeader(Exchange.CONTENT_TYPE, constant(PropertiesConstants.VALUE_CHARSET));
 
 		rest("meetup2019/client")
 				// GET
 				.get("/name")
 				.description("Busqueda de clientes por nombre")
 				.param()
-				.name("name")
+				.name(PropertiesConstants.PROPERTY_NAME)
 				.description("Nombre por el que se quiere filtrar la busqueda")
 				.required(true)
 				.type(RestParamType.query)
 				.endParam()
-				.responseMessage().code(200).message(RESPONSE_OK)
-				.responseModel(StandardResponse.class).endResponseMessage()
-				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
-				.responseMessage().code(500).message(RESPONSE_ERROR)
-				.responseModel(ErrorResponseProcessor.class).endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.OK.value())
+					.message(MessagesConstants.RESPONSE_OK)
+					.responseModel(StandardResponse.class)
+					.endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.BAD_REQUEST.value())
+					.message(MessagesConstants.RESPONSE_BAD_REQUEST)
+					.endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+					.message(MessagesConstants.RESPONSE_INTERNAL_ERROR)
+					.responseModel(ErrorResponseProcessor.class)
+					.endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
 				.to("direct:get-client-name")
@@ -112,35 +115,46 @@ public class CamelRouter extends RouteBuilder {
 				.get("/document")
 				.description("Búsqueda de un cliente por documento")
 				.param()
-				.name("document_type")
+				.name(PropertiesConstants.PROPERTY_DOCUMENT_TYPE)
 				.description("Tipo del documento que se ingresara para filtrar la busqueda")
 				.required(true)
 				.type(RestParamType.query)
 				.endParam()
 				.param()
-				.name("document_number")
+				.name(PropertiesConstants.PROPERTY_DOCUMENT_NUMBER)
 				.description("Documento por el que se quiere filtrar la busqueda")
 				.required(true)
 				.type(RestParamType.query)
 				.endParam()
-				.responseMessage().code(200).message(RESPONSE_OK)
-				.responseModel(StandardResponse.class).endResponseMessage()
-				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
-				.responseMessage().code(500).message(RESPONSE_ERROR)
-				.responseModel(ErrorResponseProcessor.class).endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.OK.value())
+					.message(MessagesConstants.RESPONSE_OK)
+					.responseModel(StandardResponse.class)
+					.endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.BAD_REQUEST.value())
+					.message(MessagesConstants.RESPONSE_BAD_REQUEST)
+					.endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+					.message(MessagesConstants.RESPONSE_INTERNAL_ERROR)
+					.responseModel(ErrorResponseProcessor.class)
+					.endResponseMessage()
 				.route()
 				.process(setMetaPropertiesProcessor)
 				.process(setTypePropertyProcessor)
 				.choice()
-					.when(exchangeProperty("type").isEqualTo("dni"))
+					.when(exchangeProperty(PropertiesConstants.PROPERTY_DOCUMENT_TYPE)
+							.isEqualTo(PropertiesConstants.VALUE_DOCUMENT_TYPE_DNI))
 					.process(setDniNumberProcessor)
 					.to("direct:get-client-document")
 				.otherwise()
-					.when(exchangeProperty("type").isEqualTo("cuil"))
+					.when(exchangeProperty(PropertiesConstants.PROPERTY_DOCUMENT_TYPE)
+							.isEqualTo(PropertiesConstants.VALUE_DOCUMENT_TYPE_CUIL))
 					.process(setCuilNumberProcessor)
 					.to("direct:get-client-document")
 				.otherwise()
-					.throwException(InvalidDocumentTypeException.class, DOCUMENT_TYPE_ERROR_MESSAGE)
+					.throwException(InvalidDocumentTypeException.class, MessagesConstants.INCORRECT_DOCUMENT_TYPE)
 				.endChoice()
 				.endRest()
 
@@ -148,15 +162,24 @@ public class CamelRouter extends RouteBuilder {
 				.post()
 				.type(BodyInput.class)
 				.description("Carga o registro de un cliente")
-				.responseMessage().code(200).message(RESPONSE_OK)
-				.responseModel(StandardResponse.class).endResponseMessage()
-				.responseMessage().code(400).message(BAD_REQUEST).endResponseMessage()
-				.responseMessage().code(500).message(RESPONSE_ERROR)
-				.responseModel(ErrorResponseProcessor.class).endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.OK.value())
+					.message(MessagesConstants.RESPONSE_OK)
+					.responseModel(StandardResponse.class)
+					.endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.BAD_REQUEST.value())
+					.message(MessagesConstants.RESPONSE_BAD_REQUEST)
+					.endResponseMessage()
+				.responseMessage()
+					.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+					.message(MessagesConstants.RESPONSE_INTERNAL_ERROR)
+					.responseModel(ErrorResponseProcessor.class)
+					.endResponseMessage()
 				.route()
 				.choice()
 					.when(body().isNull())
-					.throwException(NullBodyException.class, BODY_ERROR_MESSAGE)
+					.throwException(NullBodyException.class, MessagesConstants.EMPTY_BODY)
 				.otherwise()
 					.process(setMetaPropertiesProcessor)
 					.to("direct:save-client")

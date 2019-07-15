@@ -2,7 +2,7 @@ package ar.com.wolox.javameetup2019.route;
 
 import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
-import ar.com.wolox.javameetup2019.helper.MessageConstants;
+import ar.com.wolox.javameetup2019.helper.MessagesConstants;
 import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import ar.com.wolox.javameetup2019.pojo.BodyInput;
 import ar.com.wolox.javameetup2019.processor.BodyInputValidationsProcessor;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DbAccessRoute extends RouteBuilder {
-
-	private static final String DOCUMENT_ERROR_CODE = "-2";
 
 	@Autowired
 	private ErrorResponseProcessor errorResponseProcessor;
@@ -70,8 +68,9 @@ public class DbAccessRoute extends RouteBuilder {
 				.unmarshal().json(JsonLibrary.Jackson, BodyInput.class)
 				.onException(org.springframework.dao.DataIntegrityViolationException.class)
 					.handled(true)
-					.setProperty(PropertiesConstants.PROPERTY_DETAIL, simple(MessageConstants.EXISTENT_DNI))
-					.setProperty(PropertiesConstants.PROPERTY_CODE, simple(DOCUMENT_ERROR_CODE))
+					.setProperty(PropertiesConstants.PROPERTY_DETAIL, simple(MessagesConstants.EXISTENT_DNI))
+					.setProperty(PropertiesConstants.PROPERTY_CODE,
+							simple(PropertiesConstants.ERROR_CODE_INCORRECT_DOCUMENT))
 					.process(errorResponseProcessor)
 					.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpStatus.INTERNAL_SERVER_ERROR.value()))
 					.setHeader(Exchange.CONTENT_TYPE, constant(PropertiesConstants.VALUE_CHARSET))

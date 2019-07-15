@@ -1,7 +1,7 @@
 package ar.com.wolox.javameetup2019.processor;
 
 import ar.com.wolox.javameetup2019.exception.InvalidCuilException;
-import ar.com.wolox.javameetup2019.helper.MessageConstants;
+import ar.com.wolox.javameetup2019.helper.MessagesConstants;
 import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import ar.com.wolox.javameetup2019.helper.ValidationUtils;
 import org.apache.camel.Exchange;
@@ -17,7 +17,7 @@ public class SetCuilNumberProcessor implements Processor {
 		cuil = cuil.replaceAll("-", "");
 
 		if (!ValidationUtils.validateCuil(cuil)) {
-			throw new InvalidCuilException(MessageConstants.INVALID_CUIL);
+			throw new InvalidCuilException(MessagesConstants.INVALID_CUIL);
 		}
 
 		exchange.setProperty(PropertiesConstants.PROPERTY_DOCUMENT_NUMBER, cuil);

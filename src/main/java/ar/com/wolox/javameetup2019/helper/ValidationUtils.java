@@ -3,7 +3,6 @@ package ar.com.wolox.javameetup2019.helper;
 
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.stereotype.Component;
 
 public class ValidationUtils {
 
@@ -20,7 +19,7 @@ public class ValidationUtils {
 	public static boolean validateCuil(String cuil) throws InvalidInputException {
 
 		if (cuil.length() != 11 || !NumberUtils.isCreatable(cuil)){
-			throw new InvalidInputException(MessageConstants.INVALID_CUIL);
+			throw new InvalidInputException(MessagesConstants.INVALID_CUIL);
 		}
 
 		String[] cuitArray = cuil.split("");

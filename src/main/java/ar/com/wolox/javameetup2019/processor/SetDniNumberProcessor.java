@@ -2,7 +2,7 @@ package ar.com.wolox.javameetup2019.processor;
 
 
 import ar.com.wolox.javameetup2019.exception.InvalidInputException;
-import ar.com.wolox.javameetup2019.helper.MessageConstants;
+import ar.com.wolox.javameetup2019.helper.MessagesConstants;
 import ar.com.wolox.javameetup2019.helper.PropertiesConstants;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -16,8 +16,8 @@ public class SetDniNumberProcessor implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		String dni = exchange.getIn().getHeader(PropertiesConstants.PROPERTY_DOCUMENT_NUMBER, String.class).trim();
 
-		if (dni.length() != 8 || !NumberUtils.isCreatable(dni)){
-			throw new InvalidInputException(MessageConstants.INCORRECT_DNI);
+		if ((dni.length() != PropertiesConstants.DNI_LENGTH) || (!NumberUtils.isCreatable(dni))){
+			throw new InvalidInputException(MessagesConstants.INCORRECT_DNI);
 		}
 
 		exchange.setProperty(PropertiesConstants.PROPERTY_DOCUMENT_NUMBER,dni);
