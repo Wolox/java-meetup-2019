@@ -31,7 +31,14 @@ dependencies {
     runtime group: 'com.h2database', name: 'h2', version: release.h2
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.0.7.RELEASE'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: release.spring
+
+    testCompile(
+            'junit:junit:4.12',
+            'org.codehaus.groovy:groovy-all:2.4.4',
+            'org.spockframework:spock-core:1.0-groovy-2.4')
+    testCompile group: 'org.kubek2k', name: 'springockito', version: '1.0.9'
 }
+
 
 group = 'wolox'
 version = '0.0.1-SNAPSHOT'
