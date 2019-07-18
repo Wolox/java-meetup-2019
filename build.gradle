@@ -1,58 +1,89 @@
-plugins {
-    id 'java'
-    id 'maven-publish'
-}
+import com.github.jengelman.gradle.plugins.shadow.transformers.*
 
-repositories {
-    mavenLocal()
-    maven {
-        url = 'http://repo.maven.apache.org/maven2'
+buildscript {
+    ext {
+        springBootVersion = '2.1.5.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
-ext {
-    camelVersion2 = '2.24.0'
+plugins {
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'fi.evident.beanstalk' version '0.2.2'
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id 'java'
+    id 'war'
+
 }
 
-apply from: "dependencies.gradle"
-
-dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.0.7.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: release.spring
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: release.spring
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: release.spring
-    compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-servlet-starter', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-test-spring', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-sql-starter', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-jackson-starter', version: release.camel
-    compile group: 'org.apache.camel', name: 'camel-http', version: release.camel
-    runtime group: 'com.h2database', name: 'h2', version: release.h2
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.0.7.RELEASE'
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: release.spring
-
-    testCompile(
-            'junit:junit:4.12',
-            'org.codehaus.groovy:groovy-all:2.4.4',
-            'org.spockframework:spock-core:1.0-groovy-2.4')
-    testCompile group: 'org.kubek2k', name: 'springockito', version: '1.0.9'
-}
-
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
+apply plugin: 'idea'
 
 group = 'wolox'
 version = '0.0.1-SNAPSHOT'
-description = 'java-meetup-2019'
-sourceCompatibility = '1.8'
+sourceCompatibility = 1.8
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+shadowJar {
+    // Required for Spring
+    mergeServiceFiles()
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
+    transform(PropertiesFileTransformer) {
+        paths = ['META-INF/spring.factories' ]
+        mergeStrategy = "append"
+    }
+
+}
+
+task beanstalkArchive(type: Zip, dependsOn: jar) {
+    from ('src/main/eb') {
+        into '.ebextensions'
+    }
+    from tasks.shadowJar {
+        archiveName = 'application.jar'
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+jar {
+    manifest {
+        attributes (
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'wolox.bootstrap.BootstrapApplication'
+        )
+    }
+}
+
+beanstalk {
+    profile = 'aws-profile'
+    // aws zone endpoints
+    s3Endpoint = "s3-eu-west-1.amazonaws.com"
+    beanstalkEndpoint = "elasticbeanstalk.eu-west-1.amazonaws.com"
+
+    deployments {
+        // Example to deploy to the same env
+        staging {
+            war = tasks.beanstalkArchive
+            application = 'eb-app'
+            environment = 'eb-app-env'
+//            template = 'default' // Saved configuration name to use to create each env
+        }
+    }
 }
