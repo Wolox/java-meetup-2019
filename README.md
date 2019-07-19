@@ -17,6 +17,12 @@ To know more about Wolox just follow us!
 - **master:** It has some basic configurations and examples to use Camel in different ways
 - **examples-ppt:** Here you'll see all the examples that were shown on the Java Meetup presentation
 - **demo-jerigonza:** This is the code from the project used for the Java Meetup, which takes a text from the user and using a service it detects some grammatical errors. Then, depending on the convert param, you could convert the text to jerigonza
-- **amd-client:** As we know that a basic usage of a REST API is to add, modify and delete resources, we create this basic project which you could use to start your own AMD :)
+- **amd-client:** As we know that a basic usage of a REST API is to add, modify and delete resources, we create this basic project which you could use to start your own AMD :) 
+<br/>
+<br/>
+<br/>
+<br/>
 
-![WoloxImg](http://cabaseiot.com.ar/wp-content/uploads/2017/11/wolox-2.png)
+<p align="center">
+  <img src="https://drive.google.com/uc?id=1Ke_Wc3Rfnwbj0GGXOHoVVncPTy2jeHaN">
+</p>
